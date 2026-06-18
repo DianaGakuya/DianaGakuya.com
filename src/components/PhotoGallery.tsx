@@ -2,9 +2,7 @@ import React from 'react';
 import profileImage from 'figma:asset/9c2db085165f38ba88d641e23748aec07d9cb02d.png';
 import gradImage1 from 'figma:asset/f7b9e7f3ccf3b8391d4b10fb39e8c36dad378a1c.png';
 import gradImage2 from 'figma:asset/9d213150c6c7fa0a0005e5778517109988416e3a.png';
-import casualImage1 from 'figma:asset/4bdeb0263ebcf210e240aa6eb5b05bb17b52b522.png';
 import casualImage2 from 'figma:asset/7bc8f658783f843562c90f3ef98c7c970939abdd.png';
-import outdoorImage from 'figma:asset/ed7ac0117f9c9ebb1bbb43e1388f3891829fd351.png';
 import braidsImage from 'figma:asset/03bf4021c104356baae95af0255daf3aed51aae7.png';
 // Removed logo image from the gallery
 // import logoImage from 'figma:asset/efd236e6ba8b3479d386da7d5e77a30d7ca8f85f.png';
@@ -31,18 +29,8 @@ const galleryImages = [
     type: 'portrait',
   },
   {
-    src: outdoorImage,
-    alt: 'Adventure Mode 🌿',
-    type: 'portrait',
-  },
-  {
     src: gradImage2,
     alt: 'Graduation Celebration 🎉',
-    type: 'portrait',
-  },
-  {
-    src: casualImage1,
-    alt: 'Coding From Anywhere 💻',
     type: 'portrait',
   },
 ];
