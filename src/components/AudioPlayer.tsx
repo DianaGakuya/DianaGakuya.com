@@ -9,32 +9,37 @@ export function AudioPlayer() {
   const gainNodeRef = useRef<GainNode | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Playful calming melody - C Major scale based progression
+  // Flowing, calming piano melody - Arpeggios that sustain and overlay (sustain pedal effect)
   const melody = [
-    // Phrase 1
-    { note: 'C4', duration: 0.4 },
-    { note: 'E4', duration: 0.4 },
-    { note: 'G4', duration: 0.4 },
-    { note: 'E4', duration: 0.4 },
-    // Phrase 2
-    { note: 'F4', duration: 0.4 },
-    { note: 'A4', duration: 0.4 },
-    { note: 'C5', duration: 0.4 },
-    { note: 'A4', duration: 0.4 },
-    // Phrase 3
-    { note: 'G4', duration: 0.4 },
-    { note: 'B4', duration: 0.4 },
-    { note: 'D5', duration: 0.4 },
-    { note: 'B4', duration: 0.4 },
-    // Phrase 4 - resolution
-    { note: 'C5', duration: 0.4 },
-    { note: 'G4', duration: 0.4 },
-    { note: 'E4', duration: 0.4 },
-    { note: 'C4', duration: 0.8 },
+    // Phrase 1: Cmaj7 flowing arpeggio
+    { note: 'C4', duration: 0.6 },
+    { note: 'G4', duration: 0.6 },
+    { note: 'C5', duration: 0.6 },
+    { note: 'E5', duration: 0.6 },
+    
+    // Phrase 2: Fmaj7 flowing arpeggio
+    { note: 'F4', duration: 0.6 },
+    { note: 'A4', duration: 0.6 },
+    { note: 'C5', duration: 0.6 },
+    { note: 'E5', duration: 0.6 },
+    
+    // Phrase 3: Am7 flowing arpeggio
+    { note: 'A3', duration: 0.6 },
+    { note: 'E4', duration: 0.6 },
+    { note: 'A4', duration: 0.6 },
+    { note: 'C5', duration: 0.6 },
+    
+    // Phrase 4: G6 flowing arpeggio
+    { note: 'G3', duration: 0.6 },
+    { note: 'D4', duration: 0.6 },
+    { note: 'B4', duration: 0.6 },
+    { note: 'D5', duration: 0.6 },
   ];
 
-  // Note frequencies for piano
+  // Note frequencies
   const noteFrequencies: { [key: string]: number } = {
+    'G3': 196.00,
+    'A3': 220.00,
     'C4': 261.63,
     'D4': 293.66,
     'E4': 329.63,
@@ -45,6 +50,7 @@ export function AudioPlayer() {
     'C5': 523.25,
     'D5': 587.33,
     'E5': 659.25,
+    'G5': 783.99,
   };
 
   // Initialize audio context
@@ -62,36 +68,49 @@ export function AudioPlayer() {
     };
   }, []);
 
-  // Play a single piano note
+  // Play a single note using additive synthesis to emulate a rich, organic piano tone
   const playNote = (frequency: number, duration: number, startTime: number) => {
     if (!audioContextRef.current || !gainNodeRef.current) return;
 
-    const oscillator = audioContextRef.current.createOscillator();
-    const noteGain = audioContextRef.current.createGain();
+    // Fundamental note: warm, gentle sine wave
+    const fundamentalOsc = audioContextRef.current.createOscillator();
+    const fundamentalGain = audioContextRef.current.createGain();
+    fundamentalOsc.type = 'sine';
+    fundamentalOsc.frequency.value = frequency;
 
-    oscillator.type = 'sine'; // Piano-like tone
-    oscillator.frequency.value = frequency;
+    // Pluck harmonic: sine wave 1 octave higher (2x frequency) to simulate hammer strike/tine
+    const harmonicOsc = audioContextRef.current.createOscillator();
+    const harmonicGain = audioContextRef.current.createGain();
+    harmonicOsc.type = 'sine';
+    harmonicOsc.frequency.value = frequency * 2;
 
-    // ADSR envelope for piano-like sound
-    const attackTime = 0.02;
-    const decayTime = 0.1;
-    const sustainLevel = 0.7;
-    const releaseTime = 0.3;
+    const attackTime = 0.005; // Instantaneous hammer strike attack
 
-    noteGain.gain.setValueAtTime(0, startTime);
-    noteGain.gain.linearRampToValueAtTime(1, startTime + attackTime);
-    noteGain.gain.linearRampToValueAtTime(sustainLevel, startTime + attackTime + decayTime);
-    noteGain.gain.setValueAtTime(sustainLevel, startTime + duration - releaseTime);
-    noteGain.gain.linearRampToValueAtTime(0, startTime + duration);
+    // Fundamental envelope: slowly decays over the entire duration
+    fundamentalGain.gain.setValueAtTime(0, startTime);
+    fundamentalGain.gain.linearRampToValueAtTime(0.18, startTime + attackTime);
+    fundamentalGain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
 
-    oscillator.connect(noteGain);
-    noteGain.connect(gainNodeRef.current);
+    // Harmonic envelope: decays very quickly to simulate the initial pluck/tine strike
+    const harmonicDecay = 0.15;
+    harmonicGain.gain.setValueAtTime(0, startTime);
+    harmonicGain.gain.linearRampToValueAtTime(0.06, startTime + attackTime);
+    harmonicGain.gain.exponentialRampToValueAtTime(0.001, startTime + harmonicDecay);
 
-    oscillator.start(startTime);
-    oscillator.stop(startTime + duration);
+    fundamentalOsc.connect(fundamentalGain);
+    fundamentalGain.connect(gainNodeRef.current);
+
+    harmonicOsc.connect(harmonicGain);
+    harmonicGain.connect(gainNodeRef.current);
+
+    fundamentalOsc.start(startTime);
+    fundamentalOsc.stop(startTime + duration);
+
+    harmonicOsc.start(startTime);
+    harmonicOsc.stop(startTime + harmonicDecay);
   };
 
-  // Play the melody in a loop
+  // Play the melody in a loop with sustain/overlapping notes
   const startMelody = () => {
     if (!audioContextRef.current || !isPlaying) return;
 
@@ -103,14 +122,18 @@ export function AudioPlayer() {
       if (!audioContextRef.current || !isActive || !isPlaying) return;
 
       const { note, duration } = melody[noteIndex];
-      const frequency = noteFrequencies[note];
-      
-      currentTime = audioContextRef.current.currentTime;
-      playNote(frequency, duration, currentTime);
+      if (noteFrequencies[note]) {
+        const frequency = noteFrequencies[note];
+        currentTime = audioContextRef.current.currentTime;
+        
+        // Decoupled duration: notes ring for 3.0s (sustain pedal effect) while stepping every 0.6s
+        const playDuration = duration * 5.0; 
+        playNote(frequency, playDuration, currentTime);
+      }
 
       noteIndex = (noteIndex + 1) % melody.length;
 
-      // Schedule next note
+      // Schedule next note based on step duration
       setTimeout(playNextNote, duration * 1000);
     };
 
@@ -150,16 +173,16 @@ export function AudioPlayer() {
       const hoverGain = audioContextRef.current.createGain();
       
       oscillator.type = 'sine';
-      oscillator.frequency.value = 800;
+      oscillator.frequency.value = 440; // Warm, lower pitch (A4)
       
-      hoverGain.gain.setValueAtTime(0.1, audioContextRef.current.currentTime);
-      hoverGain.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.1);
+      hoverGain.gain.setValueAtTime(0.03, audioContextRef.current.currentTime); // Very quiet, subtle hint
+      hoverGain.gain.exponentialRampToValueAtTime(0.001, audioContextRef.current.currentTime + 0.15);
       
       oscillator.connect(hoverGain);
       hoverGain.connect(audioContextRef.current.destination);
       
       oscillator.start();
-      oscillator.stop(audioContextRef.current.currentTime + 0.1);
+      oscillator.stop(audioContextRef.current.currentTime + 0.15);
     };
 
     const playClickSound = () => {
@@ -169,16 +192,16 @@ export function AudioPlayer() {
       const clickGain = audioContextRef.current.createGain();
       
       oscillator.type = 'sine';
-      oscillator.frequency.value = 1200;
+      oscillator.frequency.value = 523.25; // Calming note (C5)
       
-      clickGain.gain.setValueAtTime(0.15, audioContextRef.current.currentTime);
-      clickGain.gain.exponentialRampToValueAtTime(0.01, audioContextRef.current.currentTime + 0.08);
+      clickGain.gain.setValueAtTime(0.05, audioContextRef.current.currentTime); // Soft tick
+      clickGain.gain.exponentialRampToValueAtTime(0.001, audioContextRef.current.currentTime + 0.12);
       
       oscillator.connect(clickGain);
       clickGain.connect(audioContextRef.current.destination);
       
       oscillator.start();
-      oscillator.stop(audioContextRef.current.currentTime + 0.08);
+      oscillator.stop(audioContextRef.current.currentTime + 0.12);
     };
 
     const addHoverSound = () => {
