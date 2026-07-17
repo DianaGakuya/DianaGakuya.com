@@ -24,6 +24,7 @@ export function Navigation() {
     { label: 'About', href: '#about' },
     { label: 'Experience', href: '#experience' },
     { label: 'Projects', href: '#projects' },
+    { label: 'All Projects', href: '/list' },
     { label: 'Skills', href: '#skills' },
     { label: 'Blog', href: '#blog' },
     { label: 'Contact', href: '#contact' },
@@ -31,6 +32,10 @@ export function Navigation() {
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
+    if (href.startsWith('/')) {
+      window.location.href = href;
+      return;
+    }
     const element = document.querySelector(href);
     element?.scrollIntoView({ behavior: 'smooth' });
   };

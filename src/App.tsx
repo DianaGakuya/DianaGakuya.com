@@ -16,10 +16,20 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { AudioPlayer } from './components/AudioPlayer';
 import { CatGifAboveAchievements } from './components/CatGifAboveAchievements';
+import { ListPage } from './components/ListPage';
 import { Toaster } from './components/ui/sonner';
 import './styles/globals.css';
 
 export default function App() {
+  if (window.location.pathname === '/list') {
+    return (
+      <div className="min-h-screen">
+        <ListPage />
+        <Toaster />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <Navigation />

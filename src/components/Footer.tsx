@@ -1,9 +1,11 @@
 import React from 'react';
-import { Github, Linkedin, Mail, Heart } from 'lucide-react';
+import { Github, Linkedin, Mail, Heart, ExternalLink } from 'lucide-react';
 import { Logo } from './Logo';
 import { CatGif } from './CatGif';
+import { projectsData } from '../data/projectsData';
 
 export function Footer() {
+  const liveSites = projectsData.filter((p) => p.liveUrl);
   const socialLinks = [
     {
       icon: Github,
@@ -93,6 +95,33 @@ export function Footer() {
                 );
               })}
             </div>
+          </div>
+        </div>
+
+        {/* Websites I've Built */}
+        <div className="pt-8 border-t border-border">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <h4>Websites I've Built</h4>
+            <a
+              href="/list"
+              className="text-sm text-primary hover:underline"
+            >
+              See full project list →
+            </a>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {liveSites.map((project) => (
+              <a
+                key={project.id}
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full bg-primary/10 text-primary-foreground hover:bg-primary/20 transition-colors"
+              >
+                {project.title}
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            ))}
           </div>
         </div>
 

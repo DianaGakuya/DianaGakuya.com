@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X, ExternalLink, Award, Zap, Target } from 'lucide-react';
+import { X, ExternalLink, Github, Award, Zap, Target } from 'lucide-react';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Card } from './ui/card';
@@ -128,10 +128,31 @@ export function ProjectDetail({ projectId, onClose }: ProjectDetailProps) {
 
           {/* Footer */}
           <div className="mt-8 flex justify-center gap-4">
+            {project.liveUrl && (
+              <Button
+                asChild
+                size="lg"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Visit Live Site
+                </a>
+              </Button>
+            )}
+            {project.githubUrl && (
+              <Button asChild size="lg" variant="outline">
+                <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                  <Github className="w-4 h-4 mr-2" />
+                  View Repo
+                </a>
+              </Button>
+            )}
             <Button
               onClick={onClose}
               size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              variant={project.liveUrl || project.githubUrl ? 'outline' : 'default'}
+              className={project.liveUrl || project.githubUrl ? '' : 'bg-primary hover:bg-primary/90 text-primary-foreground'}
             >
               Close
             </Button>
