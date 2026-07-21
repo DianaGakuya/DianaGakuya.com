@@ -25,6 +25,7 @@ const experiences = [
     icon: Zap,
     emoji: '⚡',
     description: 'Led technical strategy and development of IoT monitoring platforms for energy management.',
+    liveUrl: 'https://www.thinking-energy.net/',
   },
   {
     title: 'IoT Platform Developer',
@@ -33,6 +34,7 @@ const experiences = [
     icon: Cpu,
     emoji: '🔌',
     description: 'Developed real-time IoT monitoring platform with AI-powered analytics.',
+    liveUrl: 'https://www.thinking-energy.net/',
   },
   {
     title: 'Software Engineer',
@@ -41,6 +43,7 @@ const experiences = [
     icon: Briefcase,
     emoji: '🚀',
     description: 'Building scalable web and mobile applications using modern tech stack.',
+    liveUrl: 'https://afrosoftware.com/',
   },
 ];
 
@@ -81,6 +84,16 @@ export function Experience() {
                       <h3 className="text-xl mb-1">{exp.title}</h3>
                       <div className="text-muted-foreground mb-3">{exp.company}</div>
                       <p className="text-sm leading-relaxed">{exp.description}</p>
+                      {exp.liveUrl && (
+                        <a
+                          href={exp.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block mt-2 text-sm text-primary hover:underline"
+                        >
+                          Visit site →
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>

@@ -14,7 +14,7 @@ export function Footer() {
     },
     {
       icon: Linkedin,
-      href: 'https://www.linkedin.com/in/diana-gakuya-643418195/',
+      href: 'https://www.linkedin.com/in/diana-gakuya',
       label: 'LinkedIn',
     },
     {

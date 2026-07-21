@@ -3,7 +3,7 @@ import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
-import { Mail, Phone, MapPin, Send, Download, Briefcase } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Briefcase } from 'lucide-react';
 import { toast } from 'sonner@2.0.3';
 import { HireDeeCalculator } from './HireDeeCalculator';
 
@@ -97,23 +97,7 @@ export function Contact() {
 
               {/* CTA Buttons */}
               <div className="space-y-3">
-                <Button 
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
-                  size="lg"
-                  onClick={() => {
-                    // Download CV
-                    const link = document.createElement('a');
-                    link.href = '/DianaGakuyaResume.pdf';
-                    link.download = 'DianaGakuyaResume.pdf';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                  }}
-                >
-                  <Download className="mr-2 h-5 w-5" />
-                  Download Resume
-                </Button>
-                <Button 
+                <Button
                   variant="outline"
                   className="w-full border-2 border-primary hover:bg-primary/10"
                   size="lg"

@@ -95,10 +95,10 @@ export function Navigation() {
                   variant="outline"
                   className="border-2 border-foreground text-foreground hover:bg-accent hover-sound"
                   onClick={() => {
-                    // Download CV
+                    // Download CV (cache-busted so stale browser/CDN caches never serve an old file)
                     const link = document.createElement('a');
-                    link.href = '/DianaGakuyaResume.pdf';
-                    link.download = 'DianaGakuyaResume.pdf';
+                    link.href = '/DianaGakuyaCV.pdf?v=' + Date.now();
+                    link.download = 'DianaGakuyaCV.pdf';
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);

@@ -136,10 +136,10 @@ export function Hero() {
                 size="lg" 
                 className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover-sound"
                 onClick={() => {
-                  // Download CV
+                  // Download CV (cache-busted so stale browser/CDN caches never serve an old file)
                   const link = document.createElement('a');
-                  link.href = '/DianaGakuyaResume.pdf';
-                  link.download = 'DianaGakuyaResume.pdf';
+                  link.href = '/DianaGakuyaCV.pdf?v=' + Date.now();
+                  link.download = 'DianaGakuyaCV.pdf';
                   document.body.appendChild(link);
                   link.click();
                   document.body.removeChild(link);
